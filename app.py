@@ -83,7 +83,3 @@ if __name__ == '__main__':
     init_db()
     periodic_check()  # 启动应用时，开始定时检测
     app.run(debug=True)
-
-if __name__ == '__main__':
-    init_db()  # 确保初始化数据库
-    app.run(debug=True)
