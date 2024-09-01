@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>友情链接状态监控</title>
+</head>
+<body>
+<h1>友情链接状态监控</h1>
+<table>
+    <thead>
+    <tr>
+        <th>名称</th>
+        <th>链接</th>
+        <th>状态</th>
+        <th>上次检查时间</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for link in links %}
+        <tr>
+            <td>{{ link[0] }}</td>
+            <td><a href="{{ link[1] }}" target="_blank">{{ link[1] }}</a></td>
+            <td>{{ link[2] }}</td>
+            <td>{{ link[3] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h2>添加新链接</h2>
+<form id="addLinkForm">
+    <input type="text" name="name" placeholder="网站名称" required>
+    <input type="url" name="url" placeholder="网站链接" required>
+    <button type="submit">添加</button>
+</form>
+
+<script>
+    document.getElementById('addLinkForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('/add', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('添加链接失败');
+                }
+            });
+    });
+</script>
+</body>
+</html>
