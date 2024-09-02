@@ -54,7 +54,8 @@ def index():
     c.execute("SELECT name, url, status, last_checked FROM links")
     links = c.fetchall()
     conn.close()
-    return render_template('index.html', links=links)
+    # return render_template('index.html', links=links)
+    return render_template('demo.html', links=links)
 
 
 @app.route('/add', methods=['POST'])

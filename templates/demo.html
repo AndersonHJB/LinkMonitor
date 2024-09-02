@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>友情链接状态监控</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        .status-up {
+            color: green;
+        }
+
+        .status-down {
+            color: red;
+        }
+
+        .status-unknown {
+            color: grey;
+        }
+
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .status-up .status-indicator {
+            background-color: green;
+        }
+
+        .status-down .status-indicator {
+            background-color: red;
+        }
+
+        .status-unknown .status-indicator {
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">友情链接状态监控</h1>
+    <div class="alert alert-info" role="alert">
+        <strong>部分服务运行异常</strong>
+    </div>
+
+    <!-- 服务状态部分 -->
+    <div class="mb-5">
+        <h3>小张的破站</h3>
+        <div class="list-group">
+            {% for link in links %}
+                <div class="list-group-item status-bar
+                        {{ 'status-up' if link[2] == 'UP' else 'status-down' if link[2] == 'DOWN' else 'status-unknown' }}">
+                    <span class="status-indicator"></span>
+                    <strong>{{ link[0] }}</strong> - {{ link[1] }}
+                    <span class="badge badge-pill
+                            {{ 'badge-success' if link[2] == 'UP' else 'badge-danger' if link[2] == 'DOWN' else 'badge-secondary' }}">
+                        {{ link[2] }}
+                    </span>
+                    <small class="text-muted ml-auto">最后检查时间: {{ link[3] }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- 添加链接部分 -->
+    <h4>添加新链接</h4>
+    <form id="addLinkForm" class="form-inline">
+        <input type="text" class="form-control mb-2 mr-sm-2" name="name" placeholder="网站名称" required>
+        <input type="url" class="form-control mb-2 mr-sm-2" name="url" placeholder="网站链接" required>
+        <button type="submit" class="btn btn-primary mb-2">添加</button>
+    </form>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- 自定义 JavaScript -->
+<script>
+    document.getElementById('addLinkForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('/add', {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert('添加链接失败');
+                }
+            });
+    });
+</script>
+</body>
+</html>
